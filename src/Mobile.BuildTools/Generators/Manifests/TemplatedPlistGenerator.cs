@@ -11,12 +11,13 @@ namespace Mobile.BuildTools.Generators.Manifests
         {
         }
 
-        protected override string ReadManifest() => PDictionary.FromFile(ManifestOutputPath).ToXml();
+        protected override string ReadManifest() => PDictionary.FromFile(ManifestSourcePath).ToXml();
 
         protected override void SaveManifest(string manifest)
         {
             var plist = PDictionary.FromString(manifest);
-            File.WriteAllBytes(ManifestOutputPath, plist.ToByteArray(PropertyListFormat.Binary));
+            File.WriteAllText(ManifestOutputPath, plist.ToXml());
+            //File.WriteAllBytes(ManifestOutputPath, plist.ToByteArray(PropertyListFormat.Xml));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Mobile.BuildTools.Build;
+﻿using Microsoft.Build.Framework;
+using Mobile.BuildTools.Build;
 using Mobile.BuildTools.Generators;
 using Mobile.BuildTools.Generators.Versioning;
 using Mobile.BuildTools.Models;
@@ -8,6 +9,15 @@ namespace Mobile.BuildTools.Tasks
 {
     public class AutomaticBuildVersioningTask : BuildToolsTaskBase
     {
+        [Required]
+        public string ManifestPath { get; set; }
+
+        [Required]
+        public string OutputManifestPath { get; set; }
+
+        [Output]
+        public string VersionedManifest { get; set; }
+
         public string[] ReferenceAssemblyPaths { get; set; }
 
         internal override void ExecuteInternal(IBuildConfiguration buildConfiguration)
@@ -43,11 +53,17 @@ namespace Mobile.BuildTools.Tasks
                 case Platform.Android:
                     return new AndroidAutomaticBuildVersionGenerator(this)
                     {
+                        ManifestInputPath = ManifestPath,
+                        ManifestOutputPath = OutputManifestPath,
                         ReferenceAssemblyPaths = ReferenceAssemblyPaths
                     };
                 case Platform.iOS:
                 case Platform.macOS:
-                    return new iOSAutomaticBuildVersionGenerator(this);
+                    return new iOSAutomaticBuildVersionGenerator(this)
+                    {
+                        ManifestInputPath = ManifestPath,
+                        ManifestOutputPath = OutputManifestPath,
+                    };
                 default:
                     return null;
 

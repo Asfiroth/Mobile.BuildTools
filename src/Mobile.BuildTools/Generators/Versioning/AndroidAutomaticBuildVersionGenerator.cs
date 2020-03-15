@@ -12,12 +12,12 @@ namespace Mobile.BuildTools.Generators.Versioning
 
         public string[] ReferenceAssemblyPaths { get; set; }
 
-        protected override void ProcessManifest(string path, string buildNumber)
+        protected override void ProcessManifest(string buildNumber)
         {
-            var androidManifest = AndroidAppManifest.Load(path, new AndroidVersions(ReferenceAssemblyPaths));
+            var androidManifest = AndroidAppManifest.Load(ManifestInputPath, new AndroidVersions(ReferenceAssemblyPaths));
             androidManifest.VersionCode = buildNumber;
             androidManifest.VersionName = $"{SanitizeVersion(androidManifest.VersionName)}.{buildNumber}";
-            androidManifest.WriteToFile(path);
+            androidManifest.WriteToFile(ManifestOutputPath);
         }
     }
 }

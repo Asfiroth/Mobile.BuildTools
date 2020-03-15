@@ -21,7 +21,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>8.0</string>
+	<string>10.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>E2E App</string>
 	<key>CFBundleIdentifier</key>
@@ -34,5 +34,18 @@
 	<string>E2EApp</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.avantipoint.e2eapp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>msal$AzureADClientId$</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -3,7 +3,7 @@
 
   <Import Project="PlatformHead.targets" />
 
-  <Target Name="_GatherManifests">
+  <Target Name="_MBTGatherManifests">
     <PropertyGroup>
       <TemlateAppManifest>$(_AppBundlePath)Info.plist</TemlateAppManifest>
     </PropertyGroup>

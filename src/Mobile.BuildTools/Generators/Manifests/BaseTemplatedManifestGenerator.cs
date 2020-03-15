@@ -6,13 +6,15 @@ using System.Text.RegularExpressions;
 using Microsoft.Build.Utilities;
 using Mobile.BuildTools.Build;
 using Mobile.BuildTools.Logging;
+using Newtonsoft.Json;
 using Xamarin.MacDev;
+using Mobile.BuildTools.Extensions;
 
 namespace Mobile.BuildTools.Generators.Manifests
 {
     internal abstract class BaseTemplatedManifestGenerator : GeneratorBase
     {
-        internal const string DefaultToken = @"\$\$";
+        internal const string DefaultToken = @"\$";
 
         public BaseTemplatedManifestGenerator(IBuildConfiguration configuration)
             : base(configuration)
@@ -30,23 +32,39 @@ namespace Mobile.BuildTools.Generators.Manifests
 
         public string ProjectDirectory => Build.ProjectDirectory;
 
+        public string ManifestSourcePath { get; set; }
+
         public string ManifestOutputPath { get; set; }
 
         protected override void ExecuteInternal()
         {
-            if (!File.Exists(ManifestOutputPath))
+            if (!File.Exists(ManifestSourcePath))
             {
-                Log?.LogWarning("There is no Template Manifest at the path: '{0}'", ManifestOutputPath);
+                Log?.LogWarning("There is no Template Manifest at the path: '{0}'", ManifestSourcePath);
             }
 
             var template = ReadManifest();
 
+            // Includes manifest.json and secrets.json
             var variables = Utils.EnvironmentAnalyzer.GatherEnvironmentVariables(ProjectDirectory, true);
-            foreach (Match match in GetMatches(template))
+
+            var matches = GetMatches(template);
+            var manifestFileName = Path.GetFileName(ManifestSourcePath);
+            if (matches.Count > 0)
             {
-                template = ProcessMatch(template, match, variables);
+                Log.LogMessage($"Found {matches.Count} Tokens in the {manifestFileName}");
+                foreach (Match match in matches)
+                {
+                    template = ProcessMatch(template, match, variables);
+                }
+            }
+            else
+            {
+                Log.LogMessage($"Did not find any Tokens in the {manifestFileName}. To use Tokens ");
             }
 
+            var outputFile = new FileInfo(ManifestOutputPath);
+            outputFile.Directory.Create();
             SaveManifest(template);
         }
 
@@ -97,14 +115,6 @@ namespace Mobile.BuildTools.Generators.Manifests
             }
 
             return null;
-        }
-
-        internal void WriteManifest(string template)
-        {
-            var dirPath = Path.GetDirectoryName(ManifestOutputPath);
-            if (!string.IsNullOrWhiteSpace(dirPath))
-                Directory.CreateDirectory(dirPath);
-            File.WriteAllText(ManifestOutputPath, template);
         }
     }
 }

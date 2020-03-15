@@ -4,7 +4,7 @@
   <UsingTask TaskName="Mobile.BuildTools.Tasks.TemplateManifestTask"
              AssemblyFile="$(_MobileBuildToolsParentBuildTasksDll)"/>
 
-  <Target Name="_GatherManifests"
+  <Target Name="_MBTGatherManifests"
           Condition="$(BuildToolsEnableTemplateManifests)">
     <PropertyGroup>
       <TemlateAppManifest>$(IntermediateOutputPath)android\AndroidManifest.xml</TemlateAppManifest>

@@ -10,7 +10,7 @@ namespace Mobile.BuildTools.Generators.Manifests
         {
         }
 
-        protected override string ReadManifest() => File.ReadAllText(ManifestOutputPath);
+        protected override string ReadManifest() => File.ReadAllText(ManifestSourcePath);
 
         protected override void SaveManifest(string manifest) => File.WriteAllText(ManifestOutputPath, manifest);
     }

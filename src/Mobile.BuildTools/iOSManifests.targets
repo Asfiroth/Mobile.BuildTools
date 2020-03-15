@@ -4,19 +4,25 @@
   <UsingTask TaskName="Mobile.BuildTools.Tasks.TemplateManifestTask"
              AssemblyFile="$(_MobileBuildToolsParentBuildTasksDll)"/>
 
+  <!-- _CoreCompileInterfaceDefinitions -->
   <Target Name="HandleTokenizedInfoPlist"
-          AfterTargets="_CoreCompileInterfaceDefinitions"
+          BeforeTargets="_DetectSigningIdentity"
+          AfterTargets="_MBTGatherManifests"
           DependsOnTargets="MobileBuildToolsInit"
-          Inputs="$(_AppBundlePath)Info.plist"
-          Outputs="$(_AppBundlePath)Info.plist">
+          Inputs="@(TemplatedManifest)"
+          Outputs="@(TemplatedHandledManifest)">
     <TemplateManifestTask ConfigurationPath="$(BuildToolsConfigFilePath)"
                           ProjectName="$(MSBuildProjectName)"
                           ProjectDirectory="$(MSBuildProjectDirectory)"
                           SolutionDirectory="$(SolutionDir)"
                           IntermediateOutputPath="$(IntermediateOutputPath)"
                           TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
-                          ManifestPath="$(_AppBundlePath)Info.plist"
-                          Condition="$(BuildToolsEnableTemplateManifests)" />
+                          ManifestPath="$(_AppManifest)"
+                          OutputManifestPath="$(ProcessedInfoPlist)"
+                          Condition="$(BuildToolsEnableTemplateManifests)">
+        <Output TaskParameter="ProcessedManifest"
+                PropertyName="_AppManifest" />
+      </TemplateManifestTask>
   </Target>
 
   <Target Name="SetApsEnvironmentToProduction"

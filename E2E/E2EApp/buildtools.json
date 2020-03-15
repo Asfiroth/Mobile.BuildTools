@@ -30,7 +30,7 @@
     "disable": false
   },
   "manifests": {
-    "token": "$$",
+    "token": "$",
     "variablePrefix": "Manifest_",
     "missingTokensAsErrors": false,
     "disable": false

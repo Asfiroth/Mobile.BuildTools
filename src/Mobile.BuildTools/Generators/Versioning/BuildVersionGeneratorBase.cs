@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using Mobile.BuildTools.Build;
@@ -16,7 +16,8 @@ namespace Mobile.BuildTools.Generators.Versioning
 
         private static DateTimeOffset EPOCOffset => new DateTimeOffset(new DateTime(2018, 1, 1));
 
-        private string ManifestPath { get; }
+        public string ManifestInputPath { get; set; }
+        public string ManifestOutputPath { get; set; }
         public VersionBehavior Behavior => Build.Configuration.AutomaticVersioning.Behavior;
         public VersionEnvironment VersionEnvironment => Build.Configuration.AutomaticVersioning.Environment;
         public int VersionOffset => Build.Configuration.AutomaticVersioning.VersionOffset;
@@ -31,15 +32,15 @@ namespace Mobile.BuildTools.Generators.Versioning
                 return;
             }
 
-            if(string.IsNullOrWhiteSpace(ManifestPath))
+            if(string.IsNullOrWhiteSpace(ManifestInputPath))
             {
-                Log.LogMessage("This platform is unsupported");
+                Log.LogMessage("No Manifest Path was provided.");
                 return;
             }
 
-            if(!File.Exists(ManifestPath))
+            if(!File.Exists(ManifestInputPath))
             {
-                Log.LogWarning($"The '{Path.GetFileName(ManifestPath)}' could not be found at the path '{ManifestPath}'.");
+                Log.LogWarning($"The '{Path.GetFileName(ManifestInputPath)}' could not be found at the path '{ManifestInputPath}'.");
                 return;
             }
 
@@ -49,7 +50,9 @@ namespace Mobile.BuildTools.Generators.Versioning
             LogManifestContents();
 
             Log.LogMessage("Processing Manifest");
-            ProcessManifest(ManifestPath, BuildNumber);
+            var outputFile = new FileInfo(ManifestOutputPath);
+            outputFile.Directory.Create();
+            ProcessManifest(BuildNumber);
 
             LogManifestContents();
         }
@@ -58,11 +61,11 @@ namespace Mobile.BuildTools.Generators.Versioning
         {
             if (Build.Configuration.Debug)
             {
-                Log.LogMessage(File.ReadAllText(ManifestPath));
+                Log.LogMessage(File.ReadAllText(ManifestInputPath));
             }
         }
 
-        protected abstract void ProcessManifest(string path, string buildNumber);
+        protected abstract void ProcessManifest(string buildNumber);
 
         protected string GetBuildNumber()
         {
