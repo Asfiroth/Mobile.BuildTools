@@ -2,25 +2,7 @@
 <Project>
 
   <Import Project="PlatformHead.targets" />
-
-  <Target Name="_MBTGatherManifests">
-    <PropertyGroup>
-      <TemlateAppManifest>$(_AppBundlePath)Info.plist</TemlateAppManifest>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="AutomaticBuildVersioning"
-          AfterTargets="HandleTokenizedInfoPlist"
-          DependsOnTargets="MobileBuildToolsInit">
-
-    <AutomaticBuildVersioningTask ConfigurationPath="$(BuildToolsConfigFilePath)"
-                                  ProjectName="$(MSBuildProjectName)"
-                                  ProjectDirectory="$(MSBuildProjectDirectory)"
-                                  SolutionDirectory="$(SolutionDir)"
-                                  IntermediateOutputPath="$(IntermediateOutputPath)"
-                                  TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
-                                  Condition="$(BuildToolsEnableAutomaticVersioning)" />
-  </Target>
+  <Import Project="AppleManifests.targets" />
 
   <Target Name="HandlePlatformAppConfig"
           AfterTargets="_CollectAppConfigs;ConfigurationManagerTransformAndCopy"

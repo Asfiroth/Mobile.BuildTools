@@ -1,36 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project>
 
-  <UsingTask TaskName="Mobile.BuildTools.Tasks.TemplateManifestTask"
-             AssemblyFile="$(_MobileBuildToolsParentBuildTasksDll)"/>
-
-  <!-- _CoreCompileInterfaceDefinitions -->
-  <Target Name="HandleTokenizedInfoPlist"
-          BeforeTargets="_DetectSigningIdentity"
-          AfterTargets="_MBTGatherManifests"
-          DependsOnTargets="MobileBuildToolsInit"
-          Inputs="@(TemplatedManifest)"
-          Outputs="@(TemplatedHandledManifest)">
-    <TemplateManifestTask ConfigurationPath="$(BuildToolsConfigFilePath)"
-                          ProjectName="$(MSBuildProjectName)"
-                          ProjectDirectory="$(MSBuildProjectDirectory)"
-                          SolutionDirectory="$(SolutionDir)"
-                          IntermediateOutputPath="$(IntermediateOutputPath)"
-                          TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
-                          ManifestPath="$(_AppManifest)"
-                          OutputManifestPath="$(ProcessedInfoPlist)"
-                          Condition="$(BuildToolsEnableTemplateManifests)">
-        <Output TaskParameter="ProcessedManifest"
-                PropertyName="_AppManifest" />
-      </TemplateManifestTask>
-  </Target>
-
-  <Target Name="SetApsEnvironmentToProduction"
-          AfterTargets="HandleTokenizedInfoPlist"
-          Condition=" '$(APSProductionEnvironment)' != '' And '$(APSProductionEnvironment)' != 'false' ">
-    <PropertyListEditor PropertyList="$(DeviceSpecificIntermediateOutputPath)Entitlements.xcent" Action="Set" Entry="aps-environment" Type="String" Value="production" />
-  </Target>
-
   <Target Name="IPACopyToStagingDirectory"
           AfterTargets="_ZipIpa"
           DependsOnTargets="_ZipIpa"
